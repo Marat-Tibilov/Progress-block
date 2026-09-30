@@ -32,13 +32,13 @@ export class Progress {
 
     if (!Number.isFinite(value)) {
       return;
-    };
+    }
 
     const clamped = clamp(value, MIN_VALUE, MAX_VALUE);
 
     if (clamped === this.#value) {
       return;
-    };
+    }
 
     this.#value = clamped;
     this.#renderValue();

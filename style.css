@@ -129,8 +129,15 @@ fieldset {
   min-block-size: var(--tap-target);
 }
 
+.controls__row:has(.switch) {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .controls__label {
   font-size: var(--font-size-control);
+  font-weight: 600;
 }
 
 .field {

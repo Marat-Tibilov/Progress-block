@@ -14,7 +14,7 @@ const syncValue = () => {
 
   if (!Number.isFinite(value)) {
     return;
-  };
+  }
 
   progress.value = value;
 };
