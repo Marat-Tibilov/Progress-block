@@ -1,0 +1,65 @@
+@property --progress-value {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.progress {
+  --progress-value: 0;
+  --progress-size: clamp(7.5rem, 40vmin, 15rem);
+  --progress-color: #0077ff;
+  --progress-track-color: #e5ebf3;
+  --progress-period: 1.2s;
+  --progress-thickness: 10;
+
+  display: block;
+  inline-size: var(--progress-size);
+  block-size: var(--progress-size);
+  transition: --progress-value 300ms ease-out;
+}
+
+.progress[hidden] {
+  display: none;
+}
+
+.progress__ring {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  rotate: -90deg;
+}
+
+.progress__track,
+.progress__indicator {
+  fill: none;
+  stroke-width: var(--progress-thickness);
+}
+
+.progress__track {
+  stroke: var(--progress-track-color);
+}
+
+.progress__indicator {
+  stroke: var(--progress-color);
+  stroke-linecap: butt;
+  stroke-dasharray: var(--progress-value) 100;
+}
+
+.progress--animated .progress__ring {
+  animation: progress-spin var(--progress-period) linear infinite;
+}
+
+@keyframes progress-spin {
+  from { rotate: -90deg; }
+  to   { rotate: 270deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    transition: none;
+  }
+
+  .progress--animated .progress__ring {
+    animation: none;
+  }
+}
