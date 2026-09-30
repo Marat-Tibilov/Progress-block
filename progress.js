@@ -9,20 +9,18 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 export class Progress {
   #element;
   #value;
-  #animated;
-  #hidden;
 
-  constructor(element) {
+  constructor(element, { value = MIN_VALUE } = {}) {
     if (!(element instanceof HTMLElement)) {
       throw new TypeError('Progress: root element is required');
     }
 
-    this.#element = element;
-    this.#value = clamp(Number(element.getAttribute('aria-valuenow')) || MIN_VALUE, MIN_VALUE, MAX_VALUE);
-    this.#animated = element.classList.contains(ANIMATED_CLASS);
-    this.#hidden = element.hidden;
+    const initial = Math.round(Number(value));
 
-    this.#render();
+    this.#element = element;
+    this.#value = Number.isFinite(initial) ? clamp(initial, MIN_VALUE, MAX_VALUE) : MIN_VALUE;
+
+    this.#renderValue();
   }
 
   get value() {
@@ -32,58 +30,38 @@ export class Progress {
   set value(next) {
     const value = Math.round(Number(next));
 
-    if (!Number.isFinite(value)) return;
+    if (!Number.isFinite(value)) {
+      return;
+    };
 
     const clamped = clamp(value, MIN_VALUE, MAX_VALUE);
 
-    if (clamped === this.#value) return;
+    if (clamped === this.#value) {
+      return;
+    };
 
     this.#value = clamped;
     this.#renderValue();
   }
 
   get animated() {
-    return this.#animated;
+    return this.#element.classList.contains(ANIMATED_CLASS);
   }
 
   set animated(next) {
-    const animated = Boolean(next);
-
-    if (animated === this.#animated) return;
-
-    this.#animated = animated;
-    this.#renderAnimated();
+    this.#element.classList.toggle(ANIMATED_CLASS, Boolean(next));
   }
 
   get hidden() {
-    return this.#hidden;
+    return this.#element.hidden;
   }
 
   set hidden(next) {
-    const hidden = Boolean(next);
-
-    if (hidden === this.#hidden) return;
-
-    this.#hidden = hidden;
-    this.#renderHidden();
-  }
-
-  #render() {
-    this.#renderValue();
-    this.#renderAnimated();
-    this.#renderHidden();
+    this.#element.hidden = Boolean(next);
   }
 
   #renderValue() {
     this.#element.style.setProperty(VALUE_PROPERTY, String(this.#value));
     this.#element.setAttribute('aria-valuenow', String(this.#value));
-  }
-
-  #renderAnimated() {
-    this.#element.classList.toggle(ANIMATED_CLASS, this.#animated);
-  }
-
-  #renderHidden() {
-    this.#element.hidden = this.#hidden;
   }
 }
